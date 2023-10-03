@@ -5,14 +5,11 @@ services:
     image: portainer/portainer
     container_name: portainer
     restart: always
-    ports:
-      - 9000:9000
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.portainer.rule=Host(`portainer.iny.su`)"
-      - "traefik.http.middlewares.portainer-https-redirect.redirectscheme.scheme=https"
-      - "traefik.http.routers.portainer.entrypoints=http"
-      - "traefik.http.routers.portainer.middlewares=portainer-https-redirect"
+      - "traefik.http.routers.portainer.entrypoints=web"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
@@ -21,15 +18,14 @@ services:
     image: traefik:v2.5
     container_name: traefik
     restart: always
+    command:
+      - "--entryPoints.web.address=:80"
+      - "--entryPoints.websecure.address=:443"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
     ports:
       - 80:80
       - 443:443
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.traefik.rule=Host(`traefik.iny.su`)"
-      - "traefik.http.routers.traefik.tls=true"
-      - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.traefik.entrypoints=https"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - traefik_data:/config
@@ -37,3 +33,8 @@ services:
 volumes:
   portainer_data:
   traefik_data:
+
+networks:
+  default:
+    external:
+      name: network
