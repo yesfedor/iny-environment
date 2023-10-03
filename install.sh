@@ -27,6 +27,9 @@ source ~/.profile
 nvm install 18
 nvm use 18
 
+# Создать сеть network
+docker network create network
+
 # Склонировать репозиторий и выполнить env.sh
 git clone https://github.com/yesfedor/iny-environment.git /home/dev/iny-environment
 cd /home/dev/iny-environment
