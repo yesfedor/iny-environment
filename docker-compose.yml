@@ -28,9 +28,10 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
     labels:
-      - "traefik.http.routers.api.rule=Host(`traefik.iny.su`)"
-      - "traefik.http.routers.api.service=api@internal"
-      - "traefik.http.services.api.loadbalancer.server.port=8080"
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.iny.su`)"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
     ports:
       - 80:80
       - 443:443
