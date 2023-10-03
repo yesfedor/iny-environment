@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  php:
+    image: php:8.2-fpm
+    container_name: laravel_php
+    volumes:
+      - ./laravel:/var/www/html
+    networks:
+      - laravel
+
+  mysql:
+    image: mysql:8.0
+    container_name: laravel_mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_DATABASE: "${DB_NAME}"
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - laravel
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: laravel_phpmyadmin
+    depends_on:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.phpmyadmin.rule=Host(`${PHPMYADMIN_DOMAIN}`)"
+      - "traefik.http.routers.phpmyadmin.entrypoints=http"
+      - "traefik.http.services.phpmyadmin.loadbalancer.server.port=80"
+    networks:
+      - laravel
+
+  laravel:
+    image: composer
+    container_name: laravel_composer
+    volumes:
+      - ./laravel:/var/www/html
+    working_dir: /var/www/html
+    command: composer create-project --prefer-dist laravel/laravel .
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.laravel.rule=Host(`${LARAVEL_DOMAIN}`)"
+      - "traefik.http.services.laravel.loadbalancer.server.port=80"
+    networks:
+      - laravel
+
+networks:
+  laravel:
+    external: true
+  network:
+    external: true
+
+volumes:
+  mysql_data:

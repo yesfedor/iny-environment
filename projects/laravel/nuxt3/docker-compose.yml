@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  nuxt:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nuxt_app
+    volumes:
+      - ./nuxt:/app
+    ports:
+      - 3000:3000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nuxt.rule=Host(`${VIRTUAL_HOST}`)"
+      - "traefik.http.routers.nuxt.entrypoints=http"
+      - "traefik.http.services.nuxt.loadbalancer.server.port=3000"
