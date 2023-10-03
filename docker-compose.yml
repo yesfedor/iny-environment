@@ -5,6 +5,9 @@ services:
     image: portainer/portainer
     container_name: portainer
     restart: always
+    environment:
+      - VIRTUAL_HOST=portainer.iny.su
+      - VIRTUAL_PORT=9000
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.portainer.rule=Host(`portainer.iny.su`)"
