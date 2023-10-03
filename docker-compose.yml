@@ -44,6 +44,6 @@ volumes:
   traefik_data:
 
 networks:
-  default:
-    external:
-      name: network
+  network:
+    name: network
+    external: true
