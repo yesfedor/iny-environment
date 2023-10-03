@@ -22,10 +22,15 @@ services:
     container_name: traefik
     restart: always
     command:
-      - "--entryPoints.web.address=:80"
-      - "--entryPoints.websecure.address=:443"
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    labels:
+      - "traefik.http.routers.api.rule=Host(`traefik.iny.su`)"
+      - "traefik.http.routers.api.service=api@internal"
+      - "traefik.http.services.api.loadbalancer.server.port=8080"
     ports:
       - 80:80
       - 443:443
