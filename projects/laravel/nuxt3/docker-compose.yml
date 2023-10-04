@@ -15,3 +15,8 @@ services:
       - "traefik.http.routers.nuxt.rule=Host(`${VIRTUAL_HOST}`)"
       - "traefik.http.routers.nuxt.entrypoints=http"
       - "traefik.http.services.nuxt.loadbalancer.server.port=3000"
+
+networks:
+  network:
+    name: network
+    external: true
