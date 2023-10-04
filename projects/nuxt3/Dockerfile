@@ -9,5 +9,7 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | b
 WORKDIR /app
 
 RUN npm install -g nuxt@3
+RUN npm run build
+RUN npm run start
 
 CMD ["nuxt", "build"]
