@@ -7,7 +7,7 @@ services:
     volumes:
       - ./laravel:/var/www/html
     networks:
-      - laravel
+      - network
 
   mysql:
     image: mysql:8.0
